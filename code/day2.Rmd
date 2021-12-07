@@ -1,0 +1,63 @@
+---
+title: "day2"
+author: "JJayes"
+date: "07/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+
+## Day 2
+
+### Reading in data
+
+```{r}
+df <- read_csv(here::here("data", "input-2.txt"), col_names = FALSE) %>% as_tibble() %>% 
+    rename(instructions = X1)
+```
+
+### Part 1
+
+```{r}
+df %>% view
+
+df <- df %>% 
+    separate(instructions, c("direction", "unit"), convert = TRUE) %>% 
+    mutate(unit = as.numeric(unit)) %>% 
+    mutate(axis = if_else(str_detect(direction, "forward"), true = "x", false = "y")) %>% 
+    mutate(unit = case_when(
+        # decide if direction is up or down
+        axis == "y" & direction == "up" ~ -unit,
+        TRUE ~ unit)) %>% 
+    mutate(delta_y = if_else(axis == "y", true = unit, false = 0),
+           y = cumsum(delta_y),
+           delta_x = if_else(axis == "x", true = unit, false = 0),
+           x = cumsum(delta_x),
+           rn = row_number())
+
+df %>% 
+    ggplot(aes(x, y, colour = rn)) +
+    geom_point() +
+    geom_line() +
+    labs(x = "Position",
+         y = "Depth",
+         colour = "Instruction number")
+
+df %>% 
+    tail(n = 1) %>% 
+    summarise(result = x*y)
+
+```
+
+
+### Part 2
+
+```{r}
+
+```
+
