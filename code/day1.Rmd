@@ -1,0 +1,52 @@
+---
+title: "day1"
+author: "JJayes"
+date: "06/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Day 1
+
+Advent of code is a fun thing, you can read more [here:](https://adventofcode.com/2021/)
+
+### Read in data
+
+```{r}
+df <- read_csv(here::here("data", "input-1.txt"), col_names = FALSE) %>% as_tibble() %>% 
+    rename(depth = X1)
+```
+
+### Part 1
+
+```{r}
+df %>%
+  mutate(
+    before = lag(depth),
+    difference = depth - before
+  ) %>%
+  mutate(increased = case_when(
+    difference > 0 ~ 1,
+    TRUE ~ 0
+  )) %>%
+  count(increased)
+```
+
+### Part 2
+
+```{r}
+df %>% 
+    mutate(rn = row_number(),
+           range_1 = rn - (2 + rn) %% 3,
+           range_2 = rn - (1 + rn) %% 3,
+           range_3 = rn - (0 + rn) %% 3,
+           range_4 = rn - (rn - 1) %% 3) %>% 
+    group_by(range_1) %>% 
+    mutate()
+```
+
